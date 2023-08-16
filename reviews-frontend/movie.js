@@ -3,9 +3,13 @@ const movieId = url.searchParams.get("id")
 const movieTitle = url.searchParams.get("title")
 
 const APILINK = 'https://review-backend.paupallares.repl.co/api/v1/reviews/';
+const IMG_PATH = "https://image.tmdb.org/t/p/w1280";
 
 const main = document.getElementById("section");
 const title = document.getElementById("title");
+
+const TMDB_DETAILS_API = "https://api.themoviedb.org/3/movie/";
+const TMDB_API_KEY = "c079b91dfd6e9fbba7328aee2ea2996c";
 
 title.innerText = movieTitle;
 
@@ -30,6 +34,72 @@ div_new.innerHTML = `
 main.appendChild(div_new)
 
 returnReviews(APILINK);
+
+function fetchMovieDetails() {
+    fetch(`${TMDB_DETAILS_API}${movieId}?api_key=${TMDB_API_KEY}`)
+    .then(response => response.json())
+    .then(data => {
+        const posterPath = data.poster_path;
+        displayMoviePoster(posterPath);
+    })
+    .catch(error => {
+        console.error("Error fetching movie details:", error);
+    });
+}
+
+function displayMoviePoster(posterPath) {
+    const imgElement = document.createElement("img");
+    imgElement.src = IMG_PATH + posterPath;
+    imgElement.alt = movieTitle;
+    imgElement.className = 'movie-poster';  
+    main.insertBefore(imgElement, main.firstChild);  
+}
+
+function createMainContainer() {
+    const mainContainer = document.createElement('div');
+    mainContainer.className = 'main-container';
+    main.appendChild(mainContainer);
+    return mainContainer;
+}
+
+function displayMovieHeaderAndPoster(posterPath) {
+    const mainContainer = createMainContainer();
+  
+    // Creando contenedor principal para encabezado y póster
+    const headerContainer = document.createElement('div');
+    headerContainer.className = 'header-container';
+
+    // Creando contenedor para los títulos
+    const titleContainer = document.createElement('div');
+    titleContainer.className = 'title-container';
+
+    // Agregando títulos al contenedor de títulos
+    const h1Element = document.createElement('h1');
+    h1Element.innerText = 'REVIEWS FOR:';
+    titleContainer.appendChild(h1Element);
+    
+    const h3Element = document.createElement('h3');
+    h3Element.id = 'title';
+    h3Element.innerText = movieTitle;
+    titleContainer.appendChild(h3Element);
+
+    // Agregando contenedor de títulos al contenedor principal
+    headerContainer.appendChild(titleContainer);
+
+    // Creando y configurando la imagen del póster
+    const imgElement = document.createElement("img");
+    imgElement.src = IMG_PATH + posterPath;
+    imgElement.alt = movieTitle;
+    imgElement.className = 'movie-poster';
+
+    // Agregando imagen del póster al contenedor principal
+    headerContainer.appendChild(imgElement);
+
+    // Insertando el contenedor principal en la posición correcta en main
+    main.insertBefore(headerContainer, main.firstChild);
+}
+
+fetchMovieDetails();
 
 function returnReviews(url){
   fetch(url + "movie/" + movieId).then(res => res.json())

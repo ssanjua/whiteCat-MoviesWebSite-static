@@ -46,7 +46,6 @@ function returnMovies(url){
             div_row.appendChild(div_column);
 
             main.appendChild(div_row);
-
         });
     });
 }
@@ -61,4 +60,19 @@ form.addEventListener("submit", (e) => {
         returnMovies(SEARCHAPI + searchItem);
         search.value = "";
     }
+});
+
+// Definir un arreglo de colores que te gusten.
+const colors = ['#FF5733', '#33FF57', '#5733FF', '#FF33F5', '#F5FF33', '#33F5FF'];
+
+function getRandomColorFromList() {
+    // Elegir un índice aleatorio basado en la longitud del arreglo de colores.
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+}
+
+const newsTicker = document.querySelector('.news-ticker');
+
+newsTicker.addEventListener('mouseover', () => {
+    newsTicker.style.color = getRandomColorFromList();
 });
